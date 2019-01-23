@@ -125,6 +125,13 @@ def least(tree: EBT):
         return right
 
 
+def largest_simple(tree: EBT):
+    if tree is None:
+        return -inf
+    if tree.node >= largest_simple(tree.lt) and tree.node >= largest_simple(tree.rt):
+        return tree.node
+
+
 a1 = EBT(4)
 a2 = EBT(1, a1)
 a3 = EBT(5)
