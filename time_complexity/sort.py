@@ -1,3 +1,4 @@
+import timeit
 from insertion import random_number_insertion
 from ordered_insertion import binary_insert, linear_insert
 from swap import swap
@@ -28,3 +29,11 @@ if __name__ == "__main__":
     print(sorted_list(my_list))
     sort(my_list)
     print(my_list)
+
+my_list = [i for i in range(1000)]
+my_list.reverse()
+# print(my_list)
+start_time = timeit.default_timer()
+a_list = sort(my_list)
+print(timeit.default_timer() - start_time)
+#print(my_list)

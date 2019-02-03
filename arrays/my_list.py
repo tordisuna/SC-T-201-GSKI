@@ -60,10 +60,19 @@ class ArrayList(object):
         return self.size
 
     def get_at(self, index):
-        return self.arr[index]
+        return self[index]
 
     def get_first(self):
-        return self.arr[0]
+        return self.get_at(0)
+
+    def set_at(self, value, index):
+        try:
+            self[index] = value
+        except IndexError:
+            pass
+
+    def clear(self):
+        self.__init__()
 
     def print_array_list(self):
         print(self)
@@ -111,6 +120,9 @@ a.sort()
 print(a)
 
 print(max(a))
+a.clear()
+
+
 
 for i in range(len(a)):
     a.pop()
