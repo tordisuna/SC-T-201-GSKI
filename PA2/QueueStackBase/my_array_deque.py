@@ -22,19 +22,17 @@ class ArrayDeque(object):
         self.size += 1
 
     def pop_front(self):
-        if self.is_empty():
-            return None
-        element = self.arr[self.front]
-        self.front = (self.front + 1) % self.capacity
-        self.size -= 1
-        return element
+        if not self.is_empty():
+            element = self.arr[self.front]
+            self.front = (self.front + 1) % self.capacity
+            self.size -= 1
+            return element
 
     def pop_back(self):
-        if self.is_empty():
-            return None
-        self.back = (self.back - 1) % self.capacity
-        self.size -= 1
-        return self.arr[self.back]
+        if not self.is_empty():
+            self.back = (self.back - 1) % self.capacity
+            self.size -= 1
+            return self.arr[self.back]
 
     def get_size(self):
         return self.size
@@ -73,7 +71,7 @@ class ArrayDeque(object):
             # Reorder all the elements from 0 to self.back in the new array
             for i in range(self.back):
                 new_arr[i + new_offset] = self.arr[i]
-        # Update trackers
+        # Update properties
         self.capacity *= 2
         self.arr = new_arr
         self.front = offset

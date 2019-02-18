@@ -9,7 +9,7 @@ def nodify(string) -> Node:
     return head
 
 
-def random_string(min_len=8, max_len=20):
+def random_string(min_len=0, max_len=20):
     string = ""
     for _ in range(randint(min_len, max_len)):
         string += chr(randint(65, 80))
@@ -29,15 +29,18 @@ def is_pal(string) -> bool:
 
 
 if __name__ == "__main__":
+    head = Node("AA", Node("A", None))  # not a palindrome
+    assert not palindrome(head)
+
+    # Tests random palindromes
     for i in range(100):
         pal = generate_palindrome()
         pal_head = nodify(pal)
         assert palindrome(pal_head)
 
-    for i in range(1000000):
+    # Tests random strings
+    for i in range(1000):
         string = random_string()
         string_head = nodify(string)
         pal = is_pal(string)
-        if pal:
-            print(string)
         assert palindrome(string_head) == pal

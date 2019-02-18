@@ -33,19 +33,16 @@ def print_to_screen(head):
 
 
 def palindrome(head, top=None):
-    '''Takes a head node and returns whether or not the linked list is a
-    palindrome
-    '''
-    if top is None:  # if outermost call
+    if top is None:
         if head is None or head.next is None:
             return True  # returns True if length < 2
-        top = head
-    if head.next is None:
-        return top, True  # head is bottom
+        top = head  # Store the original head
+    elif head.next is None:
+        return top.next, True
     new_top, result = palindrome(head.next, top)
-    if head is top:  # if outermost call
-        return (head.next.data == new_top.data) and result
-    result &= head.next.data == new_top.data
+    result &= head.data == new_top.data
+    if head is top:
+        return result  # return bool on outermost call
     return new_top.next, result
 
 
@@ -79,10 +76,3 @@ if __name__ == "__main__":
     print_to_screen(head)
 
     print("\n")
-
-    head = Node("A")
-    print(palindrome(head))
-
-    head = Node(
-        "A", Node("D", Node("B", Node("R", Node("B", Node("D", Node("A")))))))
-    print(palindrome(head))
