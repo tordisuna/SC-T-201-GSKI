@@ -10,17 +10,17 @@ class DLL_Deque(DoublyLinkedList):
 
     def remove_front(self):
         if not self.is_empty():
-            return self._delete_node(self._header.next)
+            return self._delete_node(self._first)
 
     def remove_back(self):
         if not self.is_empty():
-            return self._delete_node(self._trailer.prev)
+            return self._delete_node(self._last)
 
     def get_front(self):
-        return self._header.next.element
+        return self._first.element
 
     def get_back(self):
-        return self._trailer.prev.element
+        return self._last.element
 
 
 if __name__ == '__main__':
@@ -30,11 +30,11 @@ if __name__ == '__main__':
     print(queue)
     queue.print_reversed()
     print(queue.get_size())
-    for i in range(11):
-        print(queue.remove_front())
 
     for i in range(10):
         queue.add_front(i)
     for i in range(10):
         queue.remove_back()
+    print(queue)
+    queue.insertion_sort()
     print(queue)

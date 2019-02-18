@@ -92,15 +92,37 @@ def ll_ord_insrt_recursive(head, value):
 
 
 def reverse_ll(head):
-    if head is None:
-        return head
-    if head.next is None:
+    if head is None or head.next is None:
         return head
     next_node = head.next
     back = reverse_ll(next_node)
     next_node.next = head
     head.next = None
     return back
+
+
+def double_reverse_ll(head, last=None):
+    '''Reverses a linked list and then reverses it again restoring original
+    behavior
+    '''
+    if head is None:
+        return True
+    next_node = head.next
+    head.next = last
+    if next_node is None:
+        if last is None:
+            return True
+        return head
+    bottom = double_reverse_ll(next_node, head)
+    if last is not None:
+        last.next = head
+    else:
+        penultimate = bottom.next
+        penultimate.next = bottom.next = None
+        pal = double_reverse_ll(head.next)
+        penultimate.next = bottom
+        return pal and head.value == bottom.value
+    return bottom
 
 
 def merge_lists(head_1, head_2):
@@ -187,3 +209,12 @@ if __name__ == "__main__":
     print()
     e = merge_sort(e)
     print_ll(e)
+
+    test = Node('A', Node('B', Node('C', None)))
+    look = test.next
+    pal = double_reverse_ll(test)
+    print_ll_recursive(test)
+    print(pal)
+    test2 = Node('A', Node('B', Node('B', Node('A', None))))
+    print(double_reverse_ll(test2))
+    print_ll_recursive(test2)
