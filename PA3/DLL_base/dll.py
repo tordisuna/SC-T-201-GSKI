@@ -36,6 +36,9 @@ class DLL:
         if position < self.__rev_position:
             self.__rev_position -= 1
         self.__size -= 1
+        if node is self.__rev_current:
+            self.__rev_current = self._get_next(
+                self._get_prev(self.__rev_current))
         if node is self.__current:
             self.move_to_next()
         else:
@@ -56,7 +59,7 @@ class DLL:
         if self.get_size() < 2:
             return  # List of len < 2 is already sorted
         pivot = self._get_next(self._first)
-        while pivot is not self._get_next(self._last):
+        while pivot is not self._trailer:
             swap = pivot
             while swap is not self._first:
                 next_node = self._get_prev(swap)
@@ -73,16 +76,12 @@ class DLL:
     @property
     def _first(self):
         '''Get first proper node'''
-        if self.__reversed:
-            return self._trailer.prev
-        return self._header.next
+        return self._get_next(self._header)
 
     @property
     def _last(self):
         '''Get last proper node'''
-        if self.__reversed:
-            return self._header.next
-        return self._trailer.prev
+        return self._get_prev(self._trailer)
 
     def _get_next(self, node):
         '''Get node that follows given node'''
@@ -95,58 +94,6 @@ class DLL:
         if self.__reversed:
             return node.next
         return node.prev
-
-    # Required functions
-
-    def __str__(self):
-        string = ""
-        if self.is_empty():
-            return string
-        node = self._first
-        while node is not self._get_next(self._last):
-            string += str(node.element) + " "
-            node = self._get_next(node)
-        return string
-
-    def __len__(self):
-        return self.get_size()
-
-    def insert(self, element):
-        self._insert_between(
-            element, self._get_prev(self.__current), self.__current
-        )
-        if self.__rev_position >= self.__current_position:
-            self.__rev_position += 1
-        self.__current_position += 1
-        self.move_to_prev()
-
-    def remove(self):
-        if self.__current is not self._get_next(self._last):
-            val = self._delete_node(self.__current, self.__current_position)
-            return val
-
-    def get_value(self):
-        return self.__current.element
-
-    def move_to_next(self):
-        if self.__current is not self._get_next(self._last):
-            self.__current = self._get_next(self.__current)
-            self.__current_position += 1
-            self._correct_rev()
-
-    def move_to_prev(self):
-        if self.__current is not self._first:
-            self.__current = self._get_prev(self.__current)
-            self.__current_position -= 1
-            self._correct_rev()
-
-    def move_to_pos(self, position: int):
-        if 0 <= position <= self.get_size():
-            diff = position - self.__current_position + 1
-            for _ in range(diff):
-                self.move_to_next()
-            for _ in range(-diff):
-                self.move_to_prev()
 
     def _correct_rev(self):
         '''nudges self.__rev_current by 1 if necessary'''
@@ -165,24 +112,71 @@ class DLL:
         self.__current = self._first
         self.__rev_current = self._last
 
+    # Required functions
+
+    def __str__(self):
+        string = ""
+        if self.is_empty():
+            return string
+        node = self._first
+        while node is not self._trailer:
+            string += str(node.element) + " "
+            node = self._get_next(node)
+        return string
+
+    def __len__(self):
+        return self.get_size()
+
+    def insert(self, element):
+        self._insert_between(
+            element, self._get_prev(self.__current), self.__current
+        )
+        if self.__rev_position >= self.__current_position:
+            self.__rev_position += 1
+        self.__current_position += 1
+        self.move_to_prev()
+
+    def remove(self):
+        if self.__current is not self._trailer:
+            val = self._delete_node(self.__current, self.__current_position)
+            return val
+
+    def get_value(self):
+        return self.__current.element
+
+    def move_to_next(self):
+        if self.__current is not self._trailer:
+            self.__current = self._get_next(self.__current)
+            self.__current_position += 1
+            self._correct_rev()
+
+    def move_to_prev(self):
+        if self.__current is not self._first:
+            self.__current = self._get_prev(self.__current)
+            self.__current_position -= 1
+            self._correct_rev()
+
+    def move_to_pos(self, position: int):
+        if 0 <= position <= self.get_size():
+            diff = position - self.__current_position + 1
+            for _ in range(diff):
+                self.move_to_next()
+            for _ in range(-diff):
+                self.move_to_prev()
+
     def remove_all(self, value):
         node = self._last
-        reset = False
         for i in range(self.get_size(), 0, -1):
             if node.element == value:
                 if node is self.__current:
-                    reset = True
+                    self._reset_current()
                 self._delete_node(node, i)
-                if node is self.__rev_current:
-                    self.__rev_current = self._get_next(
-                        self._get_prev(self.__rev_current))
             node = self._get_prev(node)
-        if reset:
-            self._reset_current()
 
     def reverse(self):  # O(1)
         self.__reversed = not self.__reversed
         self.__current, self.__rev_current = self.__rev_current, self.__current
+        self._header, self._trailer = self._trailer, self._header
 
     def sort(self):
         self._insertion_sort()
