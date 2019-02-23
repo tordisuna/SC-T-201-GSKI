@@ -8,12 +8,12 @@ class Node:
 
 class DLL:
     def __init__(self, *args, **kwargs):
-        self._header = Node()
-        self._trailer = Node(None, self._header)
-        self._header.next = self._trailer
+        self.__header = Node()
+        self.__trailer = Node(None, self.__header)
+        self.__header.next = self.__trailer
         self.__size = 0
-        self.__current = self._trailer  # For iteration
-        self.__rev_current = self._header  # used when reversed
+        self.__current = self.__trailer  # For iteration
+        self.__rev_current = self.__header  # used when reversed
         self.__current_position = 1
         self.__rev_position = 0
         self.__reversed = False
@@ -59,7 +59,7 @@ class DLL:
         if self.get_size() < 2:
             return  # List of len < 2 is already sorted
         pivot = self._get_next(self._first)
-        while pivot is not self._trailer:
+        while pivot is not self.__trailer:
             swap = pivot
             while swap is not self._first:
                 next_node = self._get_prev(swap)
@@ -76,12 +76,12 @@ class DLL:
     @property
     def _first(self):
         '''Get first proper node'''
-        return self._get_next(self._header)
+        return self._get_next(self.__header)
 
     @property
     def _last(self):
         '''Get last proper node'''
-        return self._get_prev(self._trailer)
+        return self._get_prev(self.__trailer)
 
     def _get_next(self, node):
         '''Get node that follows given node'''
@@ -96,7 +96,7 @@ class DLL:
         return node.prev
 
     def _correct_rev(self):
-        '''nudges self.__rev_current by 1 if necessary'''
+        '''Nudges self.__rev_current by 1 if necessary'''
         expected_pos = (self.get_size() + 1) - self.__current_position
         diff = self.__rev_position - expected_pos
         if diff < 0:
@@ -116,10 +116,8 @@ class DLL:
 
     def __str__(self):
         string = ""
-        if self.is_empty():
-            return string
         node = self._first
-        while node is not self._trailer:
+        for _ in range(self.get_size()):
             string += str(node.element) + " "
             node = self._get_next(node)
         return string
@@ -137,7 +135,7 @@ class DLL:
         self.move_to_prev()
 
     def remove(self):
-        if self.__current is not self._trailer:
+        if self.__current is not self.__trailer:
             val = self._delete_node(self.__current, self.__current_position)
             return val
 
@@ -145,7 +143,7 @@ class DLL:
         return self.__current.element
 
     def move_to_next(self):
-        if self.__current is not self._trailer:
+        if self.__current is not self.__trailer:
             self.__current = self._get_next(self.__current)
             self.__current_position += 1
             self._correct_rev()
@@ -176,7 +174,7 @@ class DLL:
     def reverse(self):  # O(1)
         self.__reversed = not self.__reversed
         self.__current, self.__rev_current = self.__rev_current, self.__current
-        self._header, self._trailer = self._trailer, self._header
+        self.__header, self.__trailer = self.__trailer, self.__header
 
     def sort(self):
         self._insertion_sort()
