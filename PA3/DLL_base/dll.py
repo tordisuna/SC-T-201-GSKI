@@ -6,10 +6,6 @@ class Node:
         self.next = next
 
 
-# PROBLEMS
-# Remove_all and __rev_current interaction
-# Insert and __rev_current interaction
-
 class DLL:
     def __init__(self, *args, **kwargs):
         self._header = Node()
@@ -18,8 +14,8 @@ class DLL:
         self.__size = 0
         self.__current = self._trailer  # For iteration
         self.__rev_current = self._header  # used when reversed
-        self.__current_position = 0
-        self.__rev_position = 1
+        self.__current_position = 1
+        self.__rev_position = 0
         self.__reversed = False
 
     def _insert_between(self, element, node_a, node_b):
@@ -33,7 +29,7 @@ class DLL:
         self.__size += 1
         return new_node
 
-    def _delete_node(self, node):
+    def _delete_node(self, node, position):
         node.prev.next, node.next.prev = node.next, node.prev
         self.__size -= 1
         return node.element
@@ -51,13 +47,15 @@ class DLL:
     def _insertion_sort(self):
         if self.get_size() < 2:
             return  # List of len < 2 is already sorted
-        pivot = self._first
+        pivot = self._get_next(self._first)
         while pivot is not self._get_next(self._last):
             swap = pivot
             while swap is not self._first:
                 next_node = self._get_prev(swap)
                 if next_node.element > swap.element:
                     self._swap(swap, next_node)
+                else:
+                    break
                 swap = next_node
             pivot = self._get_next(pivot)
 
@@ -106,19 +104,23 @@ class DLL:
         return self.get_size()
 
     def insert(self, element):
-        # print(self.__rev_current.element)
-        # print(self.__current.element)
         self._insert_between(
             element, self._get_prev(self.__current), self.__current
         )
-        if self.__rev_current is self.__current or self.__rev_current is self._last:
-            self.__rev_current = self._get_prev(self.__rev_current)
+        if self.__rev_position >= self.__current_position:
+            self.__rev_position += 1
+        self.__current_position += 1
+        if self.__current_position - 1 > len(self):
+            string = str(self)
         self.move_to_prev()
 
     def remove(self):
-        if (self.__current is not self._header and
-                self.__current is not self._trailer):
+        if (self.__current is not self._get_prev(self._first) and
+                self.__current is not self._get_next(self._last)):
             element = self._delete_node(self.__current)
+            if self.__rev_position > self.__current_position:
+                self.__rev_position -= 1
+            self.__current_position -= 1
             self.move_to_next()
             return element
 
@@ -128,36 +130,90 @@ class DLL:
     def move_to_next(self):
         if self.__current is not self._get_next(self._last):
             self.__current = self._get_next(self.__current)
-        if self.__rev_current is not self._first:
-            self.__rev_current = self._get_prev(self.__rev_current)
+            self.__current_position += 1
+            if self.__current_position - 1 > len(self):
+                string = str(self)
+            self._correct_rev()
 
     def move_to_prev(self):
+        if self.__current_position - 2 > len(self):
+            raise Exception
+
         if self.__current is not self._first:
             self.__current = self._get_prev(self.__current)
-        if self.__rev_current is not self._get_next(self._last):
-            self.__rev_current = self._get_next(self.__rev_current)
+            self.__current_position -= 1
+            self._correct_rev()
 
     def move_to_pos(self, position: int):
-        if 0 <= position < self.get_size():
-            self.__current = self._first
-            self.__rev_current = self._last
+        if 0 <= position <= self.get_size():
+            self._reset_current()
             for _ in range(position):
                 self.move_to_next()
 
+    def _correct_rev(self):
+        '''nudges self.__rev_current if necessary'''
+        expected_pos = (self.get_size() + 1) - self.__current_position
+        if expected_pos < 0:
+            raise Exception()
+        diff = self.__rev_position - expected_pos
+        if diff < 0:
+            self.__rev_current = self._get_next(self.__rev_current)
+            self.__rev_position += 1
+        elif diff > 0:
+            self.__rev_current = self._get_prev(self.__rev_current)
+            self.__rev_position -= 1
+        if abs(diff > 1):
+            raise Exception()
+        if self.__rev_current is None:
+            raise Exception()
+
+    def _reset_current(self):
+        self.__current_position = 1
+        self.__rev_position = self.__size
+        self.__current = self._first
+        self.__rev_current = self._last
+
+    # def remove_all(self, value):
+    #     node = self._first
+    #     reset = False
+    #     for i in range(1, self.get_size() + 1):
+    #         if node.element == value:
+    #             self._delete_node(node)
+    #             if self.__rev_position > i:
+    #                 self.__rev_position -= 1
+    #             if self.__current_position > i:
+    #                 self.__current_position -= 1
+    #             self._correct_rev()
+    #             if node is self.__rev_current:
+    #                 self.__rev_current = self._get_prev(self.__rev_current)
+    #             if node is self.__current:
+    #                 reset = True
+    #         node = self._get_next(node)
+    #     if reset:
+    #         self._reset_current()
+
     def remove_all(self, value):
-        node = self._first
-        for _ in range(self.get_size()):
-            if node.element == value:
-                self._delete_node(node)
-                if node is self.__current:
-                    self.__current = self._first
-                    self.__rev_current = self._last
-            node = self._get_next(node)
+        old_pos = self.__current_position - 1
+        reset = False
+        self._reset_current()
+        for i in range(self.get_size()):
+            if self.__current.element == value:
+                self.remove()
+                if i < old_pos:
+                    old_pos -= 1
+                elif i == old_pos:
+                    reset = True
+            else:
+                self.move_to_next()
+        if reset:
+            self._reset_current()
+        else:
+            self.move_to_pos(old_pos)
 
     def reverse(self):  # O(1)
         self.__reversed = not self.__reversed
         self.__current, self.__rev_current = self.__rev_current, self.__current
-        # There is a problem with the current node, it should be flipped
 
     def sort(self):
         self._insertion_sort()
+        self._reset_current()

@@ -134,7 +134,10 @@ if __name__ == "__main__":
     print("# of 4:", count_value(head, 4))
     print("# of 5:", count_value(head, 5))
     head = None
-    print(count_value(head, 9))
+    print(count_value(head, 6))
+    head = SLL_Node()
+    print(count_value(head, 4))
+    print(count_value(head, None))
 
     print("\nTesting contains_all")
     head1 = SLL_Node(1, SLL_Node(2, SLL_Node(
