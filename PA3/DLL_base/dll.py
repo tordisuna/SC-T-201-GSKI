@@ -13,9 +13,7 @@ class DLL:
         self.__header.next = self.__trailer
         self.__size = 0
         self.__current = self.__trailer  # For iteration
-        self.__rev_current = self.__header  # used when reversed
         self.__current_position = 1
-        self.__rev_position = 0
         self.__reversed = False
 
     def _insert_between(self, element, node_a, node_b):
@@ -33,16 +31,9 @@ class DLL:
         node.prev.next, node.next.prev = node.next, node.prev
         if position <= self.__current_position:
             self.__current_position -= 1
-        if position < self.__rev_position:
-            self.__rev_position -= 1
         self.__size -= 1
-        if node is self.__rev_current:
-            self.__rev_current = self._get_next(
-                self._get_prev(self.__rev_current))
         if node is self.__current:
             self.move_to_next()
-        else:
-            self._correct_rev()
         return node.element
 
     def is_empty(self):
@@ -95,22 +86,9 @@ class DLL:
             return node.next
         return node.prev
 
-    def _correct_rev(self):
-        '''Nudges self.__rev_current by 1 if necessary'''
-        expected_pos = (self.get_size() + 1) - self.__current_position
-        diff = self.__rev_position - expected_pos
-        if diff < 0:
-            self.__rev_current = self._get_next(self.__rev_current)
-            self.__rev_position += 1
-        elif diff > 0:
-            self.__rev_current = self._get_prev(self.__rev_current)
-            self.__rev_position -= 1
-
     def _reset_current(self):
         self.__current_position = 1
-        self.__rev_position = self.__size
         self.__current = self._first
-        self.__rev_current = self._last
 
     # Required functions
 
@@ -129,8 +107,6 @@ class DLL:
         self._insert_between(
             element, self._get_prev(self.__current), self.__current
         )
-        if self.__rev_position >= self.__current_position:
-            self.__rev_position += 1
         self.__current_position += 1
         self.move_to_prev()
 
@@ -146,13 +122,11 @@ class DLL:
         if self.__current is not self.__trailer:
             self.__current = self._get_next(self.__current)
             self.__current_position += 1
-            self._correct_rev()
 
     def move_to_prev(self):
         if self.__current is not self._first:
             self.__current = self._get_prev(self.__current)
             self.__current_position -= 1
-            self._correct_rev()
 
     def move_to_pos(self, position: int):
         if 0 <= position <= self.get_size():
@@ -173,8 +147,8 @@ class DLL:
 
     def reverse(self):  # O(1)
         self.__reversed = not self.__reversed
-        self.__current, self.__rev_current = self.__rev_current, self.__current
         self.__header, self.__trailer = self.__trailer, self.__header
+        self._reset_current()
 
     def sort(self):
         self._insertion_sort()
