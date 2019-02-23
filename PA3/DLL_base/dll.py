@@ -31,6 +31,14 @@ class DLL:
 
     def _delete_node(self, node, position):
         node.prev.next, node.next.prev = node.next, node.prev
+        if position < self.__current_position:
+            self.__current_position -= 1
+        if position < self.__rev_position:
+            self.__rev_position -= 1
+        if node is self.__current:
+            self.move_to_next()
+        else:
+            self._correct_rev()
         self.__size -= 1
         return node.element
 
@@ -114,15 +122,20 @@ class DLL:
             string = str(self)
         self.move_to_prev()
 
+    # def remove(self):
+    #     if (self.__current is not self._get_prev(self._first) and
+    #             self.__current is not self._get_next(self._last)):
+    #         element = self._delete_node(self.__current)
+    #         if self.__rev_position > self.__current_position:
+    #             self.__rev_position -= 1
+    #         self.__current_position -= 1
+    #         self.move_to_next()
+    #         return element
+
     def remove(self):
-        if (self.__current is not self._get_prev(self._first) and
-                self.__current is not self._get_next(self._last)):
-            element = self._delete_node(self.__current)
-            if self.__rev_position > self.__current_position:
-                self.__rev_position -= 1
-            self.__current_position -= 1
-            self.move_to_next()
-            return element
+        if self.__current is not self._get_next(self._last):
+            val = self._delete_node(self.__current, self.__current_position)
+            return val
 
     def get_value(self):
         return self.__current.element
@@ -192,23 +205,30 @@ class DLL:
     #     if reset:
     #         self._reset_current()
 
+    # def remove_all(self, value):
+    #     old_pos = self.__current_position - 1
+    #     reset = False
+    #     self._reset_current()
+    #     for i in range(self.get_size()):
+    #         if self.__current.element == value:
+    #             self.remove()
+    #             if i < old_pos:
+    #                 old_pos -= 1
+    #             elif i == old_pos:
+    #                 reset = True
+    #         else:
+    #             self.move_to_next()
+    #     if reset:
+    #         self._reset_current()
+    #     else:
+    #         self.move_to_pos(old_pos)
+
     def remove_all(self, value):
-        old_pos = self.__current_position - 1
-        reset = False
-        self._reset_current()
+        node = self._first
         for i in range(self.get_size()):
-            if self.__current.element == value:
-                self.remove()
-                if i < old_pos:
-                    old_pos -= 1
-                elif i == old_pos:
-                    reset = True
-            else:
-                self.move_to_next()
-        if reset:
-            self._reset_current()
-        else:
-            self.move_to_pos(old_pos)
+            if node.element == value:
+                self._delete_node(node, i)
+            node = self._get_next(node)
 
     def reverse(self):  # O(1)
         self.__reversed = not self.__reversed
