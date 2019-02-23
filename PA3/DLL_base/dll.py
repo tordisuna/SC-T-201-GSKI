@@ -34,7 +34,7 @@ class DLL:
         self.__size -= 1
         if node is self.__current:
             self.move_to_next()
-        return node.element
+        return node
 
     def is_empty(self):
         return self.__size == 0
@@ -112,8 +112,8 @@ class DLL:
 
     def remove(self):
         if self.__current is not self.__trailer:
-            val = self._delete_node(self.__current, self.__current_position)
-            return val
+            node = self._delete_node(self.__current, self.__current_position)
+            return node.element
 
     def get_value(self):
         return self.__current.element
