@@ -1,4 +1,5 @@
 from bucket import *
+from hash_map import HashMap
 # you can also import more than one file,
 # although if one imports the other it should
 # be enough to import the top level one
@@ -82,9 +83,9 @@ def test_map(m):
 
 
 if __name__ == "__main__":
-    print("\nTESTING BUCKET")
-    m = Bucket()
-    test_map(m)
-    # print("\nTESTING HASHMAP")
-    # m = HashMap()
+    # print("\nTESTING BUCKET")
+    # m = Bucket()
     # test_map(m)
+    print("\nTESTING HASHMAP")
+    m = HashMap()
+    test_map(m)

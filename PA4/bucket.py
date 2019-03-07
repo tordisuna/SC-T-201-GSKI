@@ -33,6 +33,7 @@ class Bucket(LinkedList):
         for item in self:
             if item.next is not None and item.next.element.key == key:
                 self._delete_node(item.next, item)
+                break
         raise NotFoundException()
 
     def update(self, key, data):
