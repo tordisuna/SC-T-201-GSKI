@@ -34,7 +34,7 @@ class HashMap(object):
         self.size -= 1
 
     def __setitem__(self, key, data):
-        if key in self:
+        if self.contains(key):
             self.update(key, data)
         else:
             self.insert(key, data)
