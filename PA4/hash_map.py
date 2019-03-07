@@ -34,8 +34,10 @@ class HashMap(object):
         self.size -= 1
 
     def __setitem__(self, key, data):
-        index = self.get_hash(key)
-        self.buckets[index][key] = data
+        if key in self:
+            self.update(key, data)
+        else:
+            self.insert(key, data)
 
     def __getitem__(self, key):
         index = self.get_hash(key)
