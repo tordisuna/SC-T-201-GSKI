@@ -73,10 +73,11 @@ class Bucket():
     def remove(self, key):
         if not self.is_empty() and self.head.element.key == key:
             self.pop_front()
+            return
         for item in self:
             if item.next is not None and item.next.element.key == key:
                 self._delete_node(item.next, item)
-                break
+                return
         raise NotFoundException()
 
     def update(self, key, data):

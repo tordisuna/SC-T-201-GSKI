@@ -43,6 +43,9 @@ class HashMap(object):
         index = self.get_hash(key)
         return self.buckets[index][key]
 
+    def __contains__(self, key):
+        return self.contains(key)
+
     def __len__(self):
         return self.size
 
@@ -54,3 +57,11 @@ class HashMap(object):
         for bucket in old_buckets:
             for item in bucket:
                 self.insert(item.element.key, item.element.value)
+
+    # For testing purposes
+    def __str__(self):
+        string = "{"
+        for bucket in self.buckets:
+            for item in bucket:
+                string += f"{item.element.key}: {item.element.value}, "
+        return string + "}"
