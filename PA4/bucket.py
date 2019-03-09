@@ -21,7 +21,6 @@ class Node(object):
 class Bucket(object):
     def __init__(self):
         self.__head = None
-        self.__back = self.__head
         self.__size = 0
         self.__current = None  # For iteration only
 
@@ -59,6 +58,7 @@ class Bucket(object):
             self._push_front(Item(key, data))
 
     def __getitem__(self, key):
+        '''Get the value associated with key'''
         item = self.__get_full_item(key)
         return item.value
 
@@ -68,7 +68,7 @@ class Bucket(object):
     # Internal functions
 
     def __get_full_item(self, key):
-        '''Get the Item object where item.key = key'''
+        '''Get the item associated with key'''
         for item in self:
             if item.key == key:
                 return item

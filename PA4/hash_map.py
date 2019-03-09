@@ -1,4 +1,4 @@
-from bucket import Bucket
+from bucket import Bucket, NotFoundException
 
 
 class HashMap(object):
@@ -31,9 +31,9 @@ class HashMap(object):
         self.size -= 1
 
     def __setitem__(self, key, data):
-        if self.contains(key):
+        try:
             self.update(key, data)
-        else:
+        except NotFoundException:
             self.insert(key, data)
 
     def __getitem__(self, key):

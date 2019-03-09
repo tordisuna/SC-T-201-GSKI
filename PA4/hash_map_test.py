@@ -59,7 +59,7 @@ def check_len(key, value):
 
 
 checking_functions = [check_insert, check_find, check_contains,
-                      check_update, check_len]
+                      check_update, check_len, check_remove]
 
 if __name__ == "__main__":
     for _ in range(100000):
