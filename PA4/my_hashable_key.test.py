@@ -17,7 +17,7 @@ def get_ratio(buckets):
     return (diff / max(buckets))
 
 
-def test_with_bucket_list(bucket_count: int, items_per_bucket=300):
+def test_with_bucket_list(bucket_count: int, items_per_bucket=100):
     keys = list()
     for _ in range(items_per_bucket * bucket_count):
         keys.append(MyHashableKey(randint(0, 10000) * 4, random_string()))

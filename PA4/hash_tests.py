@@ -83,9 +83,9 @@ def test_map(m):
 
 
 if __name__ == "__main__":
-    # print("\nTESTING BUCKET")
-    # m = Bucket()
-    # test_map(m)
+    print("\nTESTING BUCKET")
+    m = Bucket()
+    test_map(m)
     print("\nTESTING HASHMAP")
     m = HashMap()
     test_map(m)

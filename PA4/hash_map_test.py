@@ -18,7 +18,7 @@ def check_insert(key, value):
         my_hash_map.insert(key, value)
         assert len(my_dict) == len(my_hash_map)
         assert my_dict[key] == my_hash_map[key]
-    assert (0.59 < (len(my_hash_map) - 1) / my_hash_map.bucket_count <= 1.2 or
+    assert (0.5 < (len(my_hash_map) - 1) / my_hash_map.bucket_count <= 1.2 or
             len(my_hash_map) < 5)
 
 

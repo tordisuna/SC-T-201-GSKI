@@ -18,12 +18,11 @@ class MyHashableKey(object):
     #     return my_hash % 2147483647
 
     def __hash__(self):
-        # mask = 0xffffffffffffffff
         my_hash = self.int_value
         if self.string_value:
             my_hash ^= (ord(self.string_value[0]) << 7)
         for c in self.string_value:
-            my_hash = ((my_hash * 1000003) ^ ord(c)) % 2147483647
+            my_hash = ((my_hash * 115249) ^ ord(c)) & self.MASK
         return my_hash
 
     def cycle(self, an_int: int, digits: int):
