@@ -5,7 +5,7 @@ class MyHashableKey(object):
     MASK = (1 << 64) - 1
     M = 0xc6a4a7935bd1e995
     R = 47
-    seed = randint(0, MASK)  # Chooses random number at startup
+    seed = randint(0, MASK)  # Chooses random seed at startup
 
     def __init__(self, int_value, string_value):
         self.int_value = int_value
