@@ -22,7 +22,7 @@ class Item(object):
         return "{" + str(self.key) + ": " + str(self.value) + "}"
 
     def __repr__(self):
-        return "{" + str(self.key) + ": " + str(self.value) + "}"
+        str(self)
 
 
 class Map(object):
