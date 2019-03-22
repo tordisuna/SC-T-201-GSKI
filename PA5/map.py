@@ -1,23 +1,17 @@
+from dataclasses import dataclass, field
+
+
+@dataclass(order=True)
+class Item(object):
+    key: object = field()
+    value: object = field(compare=False)
+
+
+@dataclass(order=True)
 class BSTNode(object):
-    def __init__(self, element, left=None, right=None):
-        self.element = element
-        self.left = left
-        self.right = right
-
-    def __eq__(self, other):
-        if isinstance(other, type(self)):
-            return self.element == other.element
-        return self.element == other
-
-    def __gt__(self, other):
-        if isinstance(other, type(self)):
-            return self.element > other.element
-        return self.element > other
-
-    def __lt__(self, other):
-        if isinstance(other, type(self)):
-            return self.element < other.element
-        return self.element < other
+    element: object = field()
+    left: object = field(default=None, compare=False)
+    right: object = field(default=None, compare=False)
 
 
 class MySet(object):
@@ -25,33 +19,33 @@ class MySet(object):
         self.root = None
         self.size = 0
 
-    def add(self, value):
+    def add(self, key, value):
         self.size += 1
         if self.root is None:
-            self.root = BSTNode(value)
+            self.root = BSTNode(Item(key, value))
             return
-        self.add_recur(self.root, value)
+        self.add_recur(self.root, Item(key, value))
 
-    def add_recur(self, node, value):
-        if value > node:
+    def add_recur(self, node, item):
+        if item > node.element:
             if node.right is None:
-                node.right = BSTNode(value)
+                node.right = BSTNode(item)
             else:
-                self.add_recur(node.right, value)
-        elif value < node:
+                self.add_recur(node.right, item)
+        elif item < node.element:
             if node.left is None:
-                node.left = BSTNode(value)
+                node.left = BSTNode(item)
             else:
-                self.add_recur(node.left, value)
+                self.add_recur(node.left, item)
         else:
             self.size -= 1
 
-    def contains(self, value):
+    def contains(self, key):
         node = self.root
         while node is not None:
-            if node == value:
+            if node.element.key == key:
                 return True
-            elif node > value:
+            elif node.element.key > key:
                 node = node.left
             else:
                 node = node.right
@@ -60,35 +54,23 @@ class MySet(object):
     def __str__(self):
         return " ".join(map(str, self.inorder()))
 
-    # def inorder_string(self, node):
-    #     if node is None:
-    #         return ""
-    #     string = self.inorder_string(node.left)
-    #     if string:
-    #         string += " "
-    #     string += str(node.element)
-    #     right_str = self.inorder_string(node.right)
-    #     if right_str:
-    #         string += " " + right_str
-    #     return string
-
     def __contains__(self, value):
         return self.contains(value)
 
     def __len__(self):
         return self.size
 
-    def remove(self, value):
+    def remove(self, key):
         self.size -= 1
-        self.root = self.__rem(value, self.root)
+        self.root = self.__rem(key, self.root)
 
-    def __rem(self, value, node):
+    def __rem(self, key, node):
         if node is None:
             self.size += 1  # Not found
-        elif node > value:
-            node.left = self.__rem(value, node.left)
-        elif value > node:
-            node.right = self.__rem(value, node.right)
+        elif node.element.key > key:
+            node.left = self.__rem(key, node.left)
+        elif key > node.element.key:
+            node.right = self.__rem(key, node.right)
         else:
             node = self.__remove_node(node)
         return node
@@ -102,13 +84,13 @@ class MySet(object):
         return node
 
     def __leftmost(self, node):
-        '''finds leftmost node in subtree of given node'''
+        """Find leftmost node in subtree of given node."""
         if node.left:
             return self.__leftmost(node.left)
         return node
 
     def __rightmost(self, node):
-        '''find rightmost node in subtree of given node'''
+        """Find rightmost node in subtree of given node."""
         if node.right:
             return self.__rightmost(node.right)
         return node
@@ -158,23 +140,23 @@ class MySet(object):
     def __print_range(self, node, lo, hi):
         if node is None:
             return
-        if node.element >= lo:
+        if node.element.key >= lo:
             self.__print_range(node.left, lo, hi)
-        if lo <= node.element <= hi:
+        if lo <= node.element.key <= hi:
             print(node.element)
-        if node.element <= hi:
+        if node.element.key <= hi:
             self.__print_range(node.right, lo, hi)
 
 
 if __name__ == "__main__":
     my_set = MySet()
-    my_set.add(1)
-    my_set.add(6)
-    my_set.add(3)
-    my_set.add(4)
-    my_set.add(5)
-    my_set.add(7)
-    my_set.add(2)
+    my_set.add(1, "asd")
+    my_set.add(6, 6)
+    my_set.add(3, 3)
+    my_set.add(4, 4)
+    my_set.add(5, 5)
+    my_set.add(7, 7)
+    my_set.add(2, 2)
     print(my_set)
     print(2 in my_set)
     print(1 in my_set)
@@ -184,10 +166,10 @@ if __name__ == "__main__":
     print(len(my_set))
     from random import randint
     for i in range(20):
-        my_set.add(randint(0, 1000))
-    my_set.add(500)
+        my_set.add(randint(0, 1000), i)
+    my_set.add(500, "wow")
     for i in range(20):
-        my_set.add(randint(0, 1000))
+        my_set.add(randint(0, 1000), i * 5)
 
     print(len(my_set))
     print(my_set)
@@ -211,5 +193,5 @@ if __name__ == "__main__":
     # print(my_set.search("gra"))
     # print([a for a in my_set.inorder()])
     # print(my_set)
-    my_set.add(50)
+    my_set.add(50, "fiddy")
     my_set.print_range(3, 50)

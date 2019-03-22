@@ -142,7 +142,8 @@ class ArrayList:
     def __setitem__(self, index, value):
         if 0 <= index < self.size:
             self.arr[index] = value
-        raise IndexError()
+        else:
+            raise IndexError()
 
     def __delitem__(self, key):
         self.remove_at(key)

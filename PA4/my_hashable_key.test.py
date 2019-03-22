@@ -4,7 +4,7 @@ from my_hashable_key import MyHashableKey
 
 
 def random_string(min_len=1, max_len=20):
-    '''Creates and returns a random string of english upper-case characters'''
+    """Create and return a random string of english upper-case characters."""
     string = ""
     for _ in range(randint(min_len, max_len)):
         string += chr(randint(65, 90))
@@ -19,8 +19,7 @@ def get_ratio(buckets):
 
 def test_my_hashable_key_distribution(bucket_count: int, items_per_bucket=100,
                                       common_factor=4):
-    '''Use this to test your MyHashableKey implementation, and get
-    distribution'''
+    """Test your MyHashableKey implementation. Returns distribution."""
     keys = list()
     for _ in range(items_per_bucket * bucket_count):
         random_number = randint(0, 100000) * common_factor
@@ -32,7 +31,7 @@ def test_my_hashable_key_distribution(bucket_count: int, items_per_bucket=100,
 
 
 def test_random_distribution(bucket_count: int, items_per_bucket=100):
-    '''Use this to compare to a completely random distribution'''
+    """Use this to compare to a completely random distribution."""
     buckets = [0] * bucket_count
     for _ in range(items_per_bucket * bucket_count):
         buckets[randint(0, bucket_count - 1)] += 1
@@ -40,7 +39,7 @@ def test_random_distribution(bucket_count: int, items_per_bucket=100):
 
 
 def test_python_hash_distribution(bucket_count, items_per_bucket=100):
-    '''Use this to compare to python's default implementation of hashing'''
+    """Use this to compare to python's default implementation of hashing."""
     buckets = [0] * bucket_count
     for _ in range(items_per_bucket * bucket_count):
         result = randint(0, 100000) ^ hash(random_string())
@@ -55,6 +54,7 @@ def test_python_hash_distribution(bucket_count, items_per_bucket=100):
 # Average distribution ratio of 0.35 is very good!
 # That means your distribution is pretty much random.
 # My best score is 0.345
+
 
 if __name__ == "__main__":
     total = 0

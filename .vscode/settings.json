@@ -1,4 +1,6 @@
 {
-    "python.linting.pylintEnabled": true,
-    "python.pythonPath": "C:\\Users\\Guðni\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
+    "python.linting.pylintEnabled": false,
+    "python.pythonPath": "C:\\Users\\Guðni\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.linting.pep8Enabled": true,
+    "python.linting.enabled": true
 }

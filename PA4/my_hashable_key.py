@@ -16,7 +16,7 @@ class MyHashableKey(object):
                 self.string_value == other.string_value)
 
     def __hash__(self):
-        '''Hash based on murmurhash'''
+        """Hash based on murmurhash."""
         my_hash = self.seed ^ self.int_value
         for c in self.string_value:
             number = (ord(c) * self.M) & self.MASK
