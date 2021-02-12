@@ -32,6 +32,7 @@ class LinkedList(object):
             self.front = self.front.next
             self.size -= 1
             return value
+   
 
     def get_size(self):
         return self.size
