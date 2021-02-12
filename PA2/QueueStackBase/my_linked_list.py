@@ -32,6 +32,12 @@ class LinkedList(object):
             self.front = self.front.next
             self.size -= 1
             return value
+    def pop_back(self):
+        if not self.is_empty():
+                data = self.back.data
+                self.back = self.back.next
+                self.size -= 1
+                return data
 
     def get_size(self):
         return self.size
